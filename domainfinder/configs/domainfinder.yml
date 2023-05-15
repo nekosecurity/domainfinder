@@ -1,0 +1,30 @@
+api:
+  censys:
+    enable: true
+    censys_uid: null
+    censys_secret: null
+
+  shodan:
+    enable: true
+    apikey: null
+
+  alienvault:
+    enable: true
+
+  hackertarget:
+    enable: true
+    apikey: null
+
+  rapiddns:
+    enable: true
+
+  threatminer:
+    enable: true
+
+  urlscan:
+    enable: true
+    apikey: null
+
+  viewdns:
+    enable: false
+    apikey: null

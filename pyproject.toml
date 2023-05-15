@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "domainfinder"
+version = "0.1.0"
+description = ""
+authors = ["nekosecurity"]
+readme = "README.md"
+
+[tool.poetry.scripts]
+domainfinder = "domainfinder:main"
+domain-finder = "domainfinder:main"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+lxml = "^4.9.2"
+netaddr = "^0.8.0"
+colorama = "^0.4.6"
+httpx = "^0.24.0"
+pyaml = "^21.10.1"
+
+[tool.black]
+line-length = 119
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
