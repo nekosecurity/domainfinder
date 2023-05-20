@@ -1,6 +1,6 @@
 from netaddr import IPAddress, INET_PTON, IPRange, IPNetwork, AddrFormatError
 import netaddr
-from helpers.display import error
+from domainfinder.helpers.display import error
 from pathlib import Path
 
 def get_ip_version(ip:str) -> str: 

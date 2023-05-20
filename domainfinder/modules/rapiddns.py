@@ -1,8 +1,8 @@
 from lxml import html
 from collections import defaultdict
 import httpx
-from helpers.helpers import clean_uniq_results
-from helpers.display import info, error
+from domainfinder.helpers.helpers import clean_uniq_results
+from domainfinder.helpers.display import info, error
 import asyncio
 
 

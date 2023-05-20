@@ -5,9 +5,13 @@ description = ""
 authors = ["nekosecurity"]
 readme = "README.md"
 
+packages = [
+  { include = "domainfinder"}
+]
+
 [tool.poetry.scripts]
-domainfinder = "domainfinder:main"
-domain-finder = "domainfinder:main"
+domainfinder = "domainfinder.main:main"
+domain-finder = "domainfinder.main:main"
 
 [tool.poetry.dependencies]
 python = "^3.10"

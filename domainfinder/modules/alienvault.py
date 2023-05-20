@@ -1,8 +1,8 @@
 from collections import defaultdict
 import httpx
 import netaddr
-from helpers.helpers import get_ip_version, clean_uniq_results
-from helpers.display import info, error
+from domainfinder.helpers.helpers import get_ip_version, clean_uniq_results
+from domainfinder.helpers.display import info, error
 
 
 async def get_host(target: netaddr.IPAddress, verbose: bool) -> dict:

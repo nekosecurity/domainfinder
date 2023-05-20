@@ -1,19 +1,19 @@
 import argparse
-import modules.rapiddns as rapiddns
-import modules.alienvault as alienvault
-import modules.censys as censys
-import modules.urlscan as urlscan
-import modules.hackertarget as hackertarget
-import modules.shodan as shodan
-import modules.threatminer as threatminer
-import modules.viewdns as viewdns
-from helpers.helpers import (
+import domainfinder.modules.rapiddns as rapiddns
+import domainfinder.modules.alienvault as alienvault
+import domainfinder.modules.censys as censys
+import domainfinder.modules.urlscan as urlscan
+import domainfinder.modules.hackertarget as hackertarget
+import domainfinder.modules.shodan as shodan
+import domainfinder.modules.threatminer as threatminer
+import domainfinder.modules.viewdns as viewdns
+from domainfinder.helpers.helpers import (
     clean_uniq_results,
     merge_results,
     analyse_targets,
     is_valid_cidr,
 )
-from helpers.display import display_domain_in_scope, error, display_results
+from domainfinder.helpers.display import display_domain_in_scope, error, display_results
 import asyncio
 from pathlib import Path
 import yaml
@@ -21,7 +21,6 @@ import yaml
 
 async def get_domains(targets: list, verbose: bool, config: dict) -> dict:
     tasks = []
-
     if config["rapiddns"]["enable"]:
         rapiddns_target = []
         tmp_targets = targets.copy()
@@ -109,12 +108,12 @@ def main():
     options.add_argument(
         "-m",
         "--modules",
-        help=f"Space separated list of API module. Allowed values are {','.join(list(load_config('configs/domainfinder.yml')['api']))}",
-        choices=list(load_config("configs/domainfinder.yml")["api"]),
-        nargs="+",
+        help=f"Space separated list of API module. Allowed values are {','.join(list(load_config('domainfinder/configs/domainfinder.yml')['api']))}",
+        choices=list(load_config("domainfinder/configs/domainfinder.yml")["api"]),
+        nargs="*",
         metavar="",
     )
-    options.add_argument("-c", "--config", help="Select config file", default="configs/domainfinder.yml")
+    options.add_argument("-c", "--config", help="Select config file", default="domainfinder/configs/domainfinder.yml")
 
     # Core
     parser.add_argument(
@@ -128,7 +127,8 @@ def main():
 
     if args.modules:
         config = select_modules(args.modules, config["api"])
-
+    else:
+        config = config['api']
     loop = asyncio.get_event_loop()
     results = loop.run_until_complete(get_domains(args.targets, args.verbose, config))
 

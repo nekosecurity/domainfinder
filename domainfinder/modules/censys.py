@@ -2,8 +2,8 @@ from collections import defaultdict
 import httpx
 from lxml import html
 import re
-from helpers.helpers import clean_uniq_results
-from helpers.display import info, error
+from domainfinder.helpers.helpers import clean_uniq_results
+from domainfinder.helpers.display import info, error
 
 
 async def get_host(target: str, verbose: bool, censys_config: dict) -> dict:
