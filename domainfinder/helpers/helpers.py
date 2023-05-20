@@ -70,7 +70,7 @@ def analyse_targets(targets):
                 first_three_octets.append(end_ip)
                 end_ip = IPAddress(".".join(first_three_octets))
             if is_valid_ip(start_ip):
-                if start_ip > str(end_ip):
+                if IPAddress(start_ip) > IPAddress(end_ip):
                     start_ip, end_ip = end_ip, start_ip
                 [final.append(ip) for ip in IPRange(start_ip, end_ip)]
         elif "/" in target:

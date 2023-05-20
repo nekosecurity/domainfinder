@@ -97,7 +97,7 @@ def main():
     options.add_argument("-v", "--verbose", action="store_true")
     options.add_argument("-s", "--scope", help="Highlight domain in scope", nargs="+")
     options.add_argument(
-        "--display-outofscope",
+        "--show-outofscope",
         help="Display domain not in scope",
         action="store_true",
         default=None,
@@ -132,8 +132,8 @@ def main():
     loop = asyncio.get_event_loop()
     results = loop.run_until_complete(get_domains(args.targets, args.verbose, config))
 
-    if args.display_outofscope and not args.scope:
-        error("--display-outofscope cannot be used without --scope option")
+    if args.show_outofscope and not args.scope:
+        error("--show-outofscope cannot be used without --scope option")
         exit()
 
     final_results = {}
@@ -146,7 +146,7 @@ def main():
         display_results(final_results)
     if args.scope:
         args.scope = set(args.scope)
-        display_domain_in_scope(final_results, args.scope, args.display_outofscope)
+        display_domain_in_scope(final_results, args.scope, args.show_outofscope)
     if args.output_append and not args.output:
         error("--output-append cannot be used without --output option")
         exit()

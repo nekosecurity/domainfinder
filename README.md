@@ -7,6 +7,36 @@ This tool has a different approach as it only focuses on OSINT results based on 
 
 **No API key is required** but some are supported
 
+## Example
+* Differents input
+
+```bash
+poetry run domainfinder 8.8.8.8 -m rapiddns censys
+poetry run domainfinder 8.8.8.8/24
+poetry run domainfinder 8.8.8.8-12
+poetry run domainfinder ip_list.txt
+```
+* Define scope domain
+
+```bash
+poetry run domainfinder 8.8.8.8 --scope google.com
+
+[Scope: google.com]
+google-public-dns-a.google.com
+dns.google.com
+
+poetry run domainfinder 8.8.8.8 --scope google.com --show-outofscope
+
+[Scope: google.com]
+dns.google.com
+google-public-dns-a.google.com
+
+[Out Of Scope]
+testing.agentesgyt.com.gt
+movistarcloud.com
+ameenphotography.com
+```
+
 ## Notes
 Thanks to Crackmapexec for the functionality to provide different types of input as target. I shamelessly stole it
 
