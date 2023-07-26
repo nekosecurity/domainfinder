@@ -51,6 +51,7 @@ async def get_host(target: str, verbose: bool, censys_config: dict) -> dict:
                 results[target].append(rev_dns)
         results = clean_uniq_results(results)
         if verbose:
+            info(f"[Censys] {len(results)} domains found")
             for values in results.values():
                 for value in values:
                     info(f"[Censys] {value}")
