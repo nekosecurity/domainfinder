@@ -2,7 +2,7 @@ from collections import defaultdict
 import httpx
 from lxml import html
 from domainfinder.helpers.helpers import clean_uniq_results
-from domainfinder.helpers.display import error
+from domainfinder.helpers.display import info, error
 
 
 async def get_internetdb_info(target: str, verbose: bool) -> dict:
@@ -16,6 +16,7 @@ async def get_internetdb_info(target: str, verbose: bool) -> dict:
     results[target].extend(response.json()["hostnames"])
     results = clean_uniq_results(results)
     if verbose:
+        info(f"[Shodan InternetDB] {len(results.values())} domains found")
         for values in results.values():
             for value in values:
                 info(f"[Shodan InternetDB] {value}")
@@ -33,13 +34,14 @@ async def get_host(target: str, verbose: bool, apikey: str) -> dict:
         )
         await client.aclose()
         if response.status_code != 200:
-            error(f"[Shodan] Error: status code: {response.status_code}")
+            error(f"[Shodan API] Error: status code: {response.status_code}")
             return {}
         data = response.json()
         results[target].extend(data["hostnames"])
         results[target].extend(data["domains"])
         results = clean_uniq_results(results)
         if verbose:
+            info(f"[Shodan API] {len(results.values())} domains found")
             for values in results.values():
                 for value in values:
                     info(f"[Shodan API] {value}")
@@ -47,13 +49,15 @@ async def get_host(target: str, verbose: bool, apikey: str) -> dict:
         response = await client.get(f"https://www.shodan.io/host/{target}")
         await client.aclose()
         if response.status_code != 200:
-            error(f"[Shodan] Error: status code: {response.status_code}")
+            error(f"[Shodan] Error: status code: {response.status_code} Reason: {response.next_request.url}")
             return {}
         tree = html.fromstring(response.content)
         domains = tree.xpath("//td/strong[position() = 1]")[0].text_content().split(", ")
         results[target].extends(domains)
         results = clean_uniq_results(results)
-        for values in results.values():
-            for value in values:
-                info(f"[Shodan] {value}")
+        if verbose:
+            info(f"[Shodan] {len(results.values())} domains found")
+            for values in results.values():
+                for value in values:
+                    info(f"[Shodan] {value}")
     return results

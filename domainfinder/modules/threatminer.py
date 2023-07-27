@@ -1,7 +1,7 @@
 from collections import defaultdict
 import httpx
 from domainfinder.helpers.helpers import clean_uniq_results
-from domainfinder.helpers.display import error
+from domainfinder.helpers.display import info, error
 
 
 async def get_host(target: str, verbose: bool) -> dict:
@@ -12,10 +12,12 @@ async def get_host(target: str, verbose: bool) -> dict:
         error(f"[ThreatMiner] Error: status code: {response.status_code}")
         return {}
     data = response.json()
-    if len(data[results]) > 0:
+    if len(data["results"]) > 0:
         for items in data["results"]:
             if verbose:
                 info(f"[ThreatMiner] {items['domain']}")
             results[target].append(items["domain"])
         results = clean_uniq_results(results)
+    else:
+        error(f"[ThreatMiner] {data['status_message']}")
     return results

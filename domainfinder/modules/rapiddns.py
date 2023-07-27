@@ -20,6 +20,8 @@ async def get_host(target: str, verbose: bool):
     # _address = [address.text_content() for address in tree.xpath("//table[@id='table']/tbody/tr/td[position() = 2]")]
     # _record = [record.text_content() for record in tree.xpath("//table[@id='table']/tbody/tr/td[position() = 3]")]
 
+    if verbose:
+        info(f"[RapidDNS] {len(domains)} domains found")
     for domain in domains:
         if verbose:
             info(f"[RapidDNS] {domain}")

@@ -18,8 +18,11 @@ async def get_host(target: str, verbose: bool, apikey: str) -> dict:
         error(f"[HackerTarget] Error: status code: {response.status_code}")
         return {}
     if b"API count exceeded" in response.content:
+        error(f"[HackerTarget] Error: {response.content}")
         return {}
     domains = response.text.split("\n")
+    if verbose:
+        into(f"[HackerTarget] {len(domains)} domains found")
     for domain in domains:
         if verbose:
             info(f"[HackerTarget] {domain}")
