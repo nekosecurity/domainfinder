@@ -6,13 +6,11 @@ from domainfinder.helpers.display import info, error
 import asyncio
 
 
-async def get_host(target: str, client, verbose: bool):
+async def get_host(target: str, verbose: bool):
     results = defaultdict(list)
-    limits = httpx.Limits(max_connections=10)
-    #client = httpx.AsyncClient(limits=limits)
-
+    client = httpx.AsyncClient()
     response = await client.get(f"https://rapiddns.io/sameip/{target}?full=1")
-    #await client.aclose()
+    await client.aclose()
     if response.status_code != 200:
         error(f"[RapidDns] Error: status code: {response.status_code}")
         return {}
@@ -22,7 +20,8 @@ async def get_host(target: str, client, verbose: bool):
     # _record = [record.text_content() for record in tree.xpath("//table[@id='table']/tbody/tr/td[position() = 3]")]
 
     if verbose:
-        info(f"[RapidDNS] {len(domains)} domains found")
+        if len(domains) > 0:
+            info(f"[RapidDNS] {target} : {len(domains)} domains found")
     for domain in domains:
         if verbose:
             info(f"[RapidDNS] {domain}")

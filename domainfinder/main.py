@@ -22,12 +22,6 @@ import asyncio
 from pathlib import Path
 import yaml
 
-# not really useful :(
-import httpx
-
-limits = httpx.Limits(max_keepalive_connections=1, max_connections=1, keepalive_expiry=1)
-client = httpx.AsyncClient(limits=limits)
-
 
 async def get_domains(targets: list, verbose: bool, config: dict) -> dict:
     tasks = []
@@ -42,9 +36,8 @@ async def get_domains(targets: list, verbose: bool, config: dict) -> dict:
 
         rapiddns_target.extend(analyse_targets(tmp_targets))
         for target in rapiddns_target:
-            asyncio.sleep(1)
-            tasks.append(asyncio.create_task(rapiddns.get_host(target, client, verbose)))
-
+            await asyncio.sleep(1)
+            tasks.append(asyncio.create_task(rapiddns.get_host(target, verbose)))
     targets = analyse_targets(targets)
 
     for target in targets:
