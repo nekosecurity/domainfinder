@@ -25,7 +25,7 @@ async def get_domains(targets: list, verbose: bool, config: dict) -> dict:
         rapiddns_target = []
         tmp_targets = targets.copy()
 
-        for target in tmp_targets:
+        for target in targets:
             if is_valid_cidr(target):
                 rapiddns_target.append(target)
                 tmp_targets.remove(target)
@@ -36,11 +36,8 @@ async def get_domains(targets: list, verbose: bool, config: dict) -> dict:
 
     targets = analyse_targets(targets)
 
-    counter = 0
+   
     for target in targets:
-        if counter >= 10:
-            await asyncio.sleep(1)
-            counter = 0
         if config["censys"]["enable"]:
             tasks.append(asyncio.create_task(censys.get_host(target, verbose, config["censys"])))
         if config["alienvault"]["enable"]:
@@ -56,7 +53,6 @@ async def get_domains(targets: list, verbose: bool, config: dict) -> dict:
             tasks.append(asyncio.create_task(urlscan.get_host(target, verbose, config["urlscan"]["apikey"])))
         # if config["viewdns"]["enable"]:
         #     tasks.append(asyncio.create_task(viewdns.get_host(target, verbose, config["viewdns"]["apikey"])))
-        counter += 1
     responses = await asyncio.gather(*tasks, return_exceptions=True)
     return responses
 
