@@ -13,10 +13,20 @@ from domainfinder.helpers.helpers import (
     analyse_targets,
     is_valid_cidr,
 )
-from domainfinder.helpers.display import display_domain_in_scope, error, display_results
+from domainfinder.helpers.display import (
+    display_domain_in_scope,
+    error,
+    display_results,
+)
 import asyncio
 from pathlib import Path
 import yaml
+
+# not really useful :(
+import httpx
+
+limits = httpx.Limits(max_keepalive_connections=1, max_connections=1, keepalive_expiry=1)
+client = httpx.AsyncClient(limits=limits)
 
 
 async def get_domains(targets: list, verbose: bool, config: dict) -> dict:
@@ -32,11 +42,11 @@ async def get_domains(targets: list, verbose: bool, config: dict) -> dict:
 
         rapiddns_target.extend(analyse_targets(tmp_targets))
         for target in rapiddns_target:
-            tasks.append(asyncio.create_task(rapiddns.get_host(target, verbose)))
+            asyncio.sleep(1)
+            tasks.append(asyncio.create_task(rapiddns.get_host(target, client, verbose)))
 
     targets = analyse_targets(targets)
 
-   
     for target in targets:
         if config["censys"]["enable"]:
             tasks.append(asyncio.create_task(censys.get_host(target, verbose, config["censys"])))
@@ -100,7 +110,12 @@ def main():
     )
     options.add_argument("-o", "--output", help="Save domain in file")
     options.add_argument("--output-append", help="Append domains to file", action="store_true")
-    options.add_argument("--silent", help="Display silent output", action="store_true", default=True)
+    options.add_argument(
+        "--silent",
+        help="Display silent output",
+        action="store_true",
+        default=True,
+    )
     options.add_argument(
         "-m",
         "--modules",
@@ -109,7 +124,12 @@ def main():
         nargs="*",
         metavar="",
     )
-    options.add_argument("-c", "--config", help="Select config file", default="domainfinder/configs/domainfinder.yml")
+    options.add_argument(
+        "-c",
+        "--config",
+        help="Select config file",
+        default="domainfinder/configs/domainfinder.yml",
+    )
 
     # Core
     parser.add_argument(
@@ -124,7 +144,7 @@ def main():
     if args.modules:
         config = select_modules(args.modules, config["api"])
     else:
-        config = config['api']
+        config = config["api"]
     loop = asyncio.get_event_loop()
     results = loop.run_until_complete(get_domains(args.targets, args.verbose, config))
 
